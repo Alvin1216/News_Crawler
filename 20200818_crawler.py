@@ -46,17 +46,17 @@ def crawl_single_news(url,news_topics_ch):
         images = 'NA'
 
     if images == 'NA':
-        if news_topic == '科技':
+        if news_topics_ch == '科技':
             images = 'https://i.screenshot.net/18rp4t4'
-        elif news_topic == '運動':
+        elif news_topics_ch == '運動':
             images = 'https://i.screenshot.net/qlvzpbp'
-        elif news_topic == '財經':
+        elif news_topics_ch == '財經':
             images = 'https://i.screenshot.net/n3d8gtk'
-        elif news_topic == '政治':
+        elif news_topics_ch == '政治':
             images = 'https://i.screenshot.net/7d12xi2'
-        elif news_topic == '娛樂':
+        elif news_topics_ch == '娛樂':
             images = 'https://i.screenshot.net/kmy96u0'
-        elif news_topic == '健康':
+        elif news_topics_ch == '健康':
             images = 'https://i.screenshot.net/32o6ziq'
 
     #Get time of news
@@ -73,6 +73,9 @@ def crawl_single_news(url,news_topics_ch):
             contents = contents + paragraph
             
     single_news = [news_topics_ch, times, titles, contents, images, link]
+    print(single_news)
+    print("Take a rest!")
+    sleep(3)
     return single_news
 
 
@@ -80,7 +83,17 @@ def crawl_set_news(urls,news_topic_ch):
     data_list = []
     for url in urls:
         print(url,news_topic_ch)
-        data_list.append(crawl_single_news(url,news_topic_ch))
+        try:
+            data = crawl_single_news(url,news_topic_ch)
+        except Exception as e:
+            print(e)
+            continue
+        
+        if len(data[3]) > 10:
+            data_list.append(data)
+        else:
+            print('Empty content!')
+            
     return data_list
 
 def save_to_db(news_topic, data_list):
@@ -159,31 +172,26 @@ def blank_content_checker_db():
         if(len(one_news[0])<15):
             need_to_del.append(one_news[1])
     print("need to delete: "+str(need_to_del))
-       
+    
 if __name__ == "__main__":
-
     base_url = "https://tw.news.yahoo.com"
 
-    #news_topics =['all_topic', 'technology', 'sports', 'finance', 'politics', 'entertainment', 'society', 'health', 'travel', 'world']
     news_topics =['technology', 'sports', 'finance', 'politics', 'entertainment','health']
     news_topics_ch =['科技', '運動', '財經', '政治', '娛樂', '健康']
-    #news_topics =['technology']
-    #news_topics_ch =['科技']
-
 
     url = "https://tw.news.yahoo.com/{}/archive"
     archive = 'https://tw.news.yahoo.com/archive'
-    
-    
+
+
     print('connect to :' + ip)
-    
+
     for index,news_topic in enumerate(news_topics):
         print('News topic : {}'.format(news_topic))
         links = crawl_news_links(url, news_topic)
         print(len(links))
         data_list = crawl_set_news(links,news_topics_ch[index])
         data_list = cheacker_from_db(news_topics_ch[index], data_list)
-        #print(data_list)
+        print(data_list)
         save_to_db(news_topic, data_list)
         print('Take a rest!!')
-        sleep(5)
+        sleep(10)
