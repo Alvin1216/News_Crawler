@@ -37,7 +37,8 @@ def crawl_single_news(url,news_topics_ch):
     soup = BeautifulSoup(r.text, 'html.parser')
     titles = soup.title.string[:-12]
 
-    #Get img of news
+    #Get img of newsi
+    #news_topics_ch =['科技', '運動', '財經', '政治', '娛樂', '健康']
     img = soup.findAll("img", {"class": "Maw(100%)"})
     try:
         images = img[0]['src']
@@ -45,17 +46,17 @@ def crawl_single_news(url,news_topics_ch):
         images = 'NA'
 
     if images == 'NA':
-        if news_topic == 'technology':
+        if news_topic == '科技':
             images = 'https://i.screenshot.net/18rp4t4'
-        elif news_topic == 'sports':
+        elif news_topic == '運動':
             images = 'https://i.screenshot.net/qlvzpbp'
-        elif news_topic == 'finance':
+        elif news_topic == '財經':
             images = 'https://i.screenshot.net/n3d8gtk'
-        elif news_topic == 'politics':
+        elif news_topic == '政治':
             images = 'https://i.screenshot.net/7d12xi2'
-        elif news_topic == 'entertainment':
+        elif news_topic == '娛樂':
             images = 'https://i.screenshot.net/kmy96u0'
-        elif news_topic == 'health':
+        elif news_topic == '健康':
             images = 'https://i.screenshot.net/32o6ziq'
 
     #Get time of news
